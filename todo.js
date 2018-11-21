@@ -1,3 +1,5 @@
+const Http = new XMLHttpRequest();
+
 function getTasks() {
     //Returns todos stored in local storage, if empty returns empty array
     let todos = new Array;
@@ -20,6 +22,14 @@ function addTask() {
         todos.push({todo, timeAdded, status});
         localStorage.setItem('todo', JSON.stringify(todos));
         showTasks();
+
+   
+        const url=`https://majdqumseya.wixsite.com/mysite/_functions/addTodo/?text=${todo}&dateAdded=${timeAdded}&status=${status}`;
+        Http.open("GET", url);
+        Http.send();
+        Http.onreadystatechange=(e)=>{
+        console.log(Http.responseText)
+        }
     }
 }
 
@@ -36,6 +46,13 @@ function deleteTask() {
 
     //Shows tasks (from local storage)
     showTasks();
+
+        const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(id)}`;
+        Http.open("GET", url);
+        Http.send();
+        Http.onreadystatechange=(e)=>{
+        console.log(Http.responseText)
+        }
 }
 
 async function editTask() {
