@@ -19,12 +19,14 @@ function addTask() {
     const status = false;
     if (todo !== '') {
       const todos = getTasks();
-        todos.push({todo, timeAdded, status});
+      const id = todos.length+1;
+      console.log(id, "here")
+        todos.push({todo, timeAdded, status, id});
         localStorage.setItem('todo', JSON.stringify(todos));
         showTasks();
 
    
-        const url=`https://majdqumseya.wixsite.com/mysite/_functions/addTodo/?text=${todo}&dateAdded=${timeAdded}&status=${status}`;
+        const url=`https://majdqumseya.wixsite.com/mysite/_functions/addTodo/?text=${todo}&dateAdded=${timeAdded}&status=${status}&id=${id}`;
         Http.open("GET", url);
         Http.send();
         Http.onreadystatechange=(e)=>{
@@ -47,7 +49,7 @@ function deleteTask() {
     //Shows tasks (from local storage)
     showTasks();
 
-        const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(id)}`;
+        const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(todos[id].id) - 1}`;
         Http.open("GET", url);
         Http.send();
         Http.onreadystatechange=(e)=>{
@@ -57,7 +59,8 @@ function deleteTask() {
 
 async function editTask() {
     //Creats edit input for selected list item and adds event hooks to save and delete button
-    const oldValue = this.parentElement.innerText.replace('x*', '').trim();
+    const oldValue = this.parentElement.innerText.replace('x*Added: ', '').trim().slice(0, -11);
+ 
     const index = this.id;
     const listElement = document.createElement("li");
     const inputElement = document.createElement("input");
@@ -79,6 +82,7 @@ async function editTask() {
         saveTask(index, newValue);
     });
  
+    
     listElement.appendChild(inputElement);
     listElement.appendChild(deleteButton);
     listElement.appendChild(editButton);
@@ -91,15 +95,23 @@ async function editTask() {
 function saveTask(index, newTodo) {
    //Get the tasks
    const todos = getTasks();
-
+   const newTime = new Date().toLocaleTimeString();
    //Edits the selected index with new todo item
-   todos[index] = newTodo;
+   todos[index].todo = newTodo;
+   todos[index].timeAdded = newTime; 
 
    //Updates the local storage todo object with new one
    localStorage.setItem('todo', JSON.stringify(todos));
 
    //Show tasks (from local storage)
    showTasks();
+
+    const url=`https://majdqumseya.wixsite.com/mysite/_functions/editTodo/?id=${parseInt(todos[index].id)}&text=${newTodo}&time=${newTime}&status=${todos[index].status}`;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange=(e)=>{
+        console.log(Http.responseText)
+    }
 }
 
 function changeStatus() {
@@ -111,6 +123,13 @@ function changeStatus() {
 
     //Sets the local storage object to the new todos
     localStorage.setItem('todo', JSON.stringify(todos));
+
+    const url=`https://majdqumseya.wixsite.com/mysite/_functions/changeStatus/?id=${parseInt(todos[id].id)}&status=${todos[id].status}`;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange=(e)=>{
+        console.log(Http.responseText)
+    }
 }
 
 // Sort and their respective compare functions (.sort())
