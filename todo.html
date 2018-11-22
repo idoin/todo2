@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+</head>
+
+<body>
+	<div id="myDIV" class="header">
+		<h2 style="margin:5px">My To Do List</h2>
+		<hr>
+		<select id="sort" >
+			<option value="" selected>Sort by</option>
+			<option value="Date">Date</option>
+			<option value="Done">Done</option>
+			<option value="Alphabetical">Alphabetical </option>
+		</select>
+		<hr>
+		<div id="todos"></div>
+		<div id="inputBox">
+			<input id="task" placeholder="add a new task">
+		</div>
+	</div>
+
+	<script src="todo.js"></script>
+</body>
+</html>
