@@ -4,7 +4,7 @@ function show() {
 
     let html = '<ul>';
     todos.forEach((todo,i)=>{
-      html += '<li>'+todo.task+'<button class=" btn btn-danger remove" id="'+i+'">x</button><input type="checkbox" class ="check" id="'+i+'" ></li>';
+      html += '<li><button class=" btn btn-danger remove" id="'+i+'">x</button><input type="checkbox" class ="check" id="'+i+'" /><label>'+todo.task+'</label></li>';
     })
     html += '</ul>';
 
