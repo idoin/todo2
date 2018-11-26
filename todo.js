@@ -64,6 +64,7 @@ function remove() {
 }
 
 //check function to update the status of the check button
+
 function check() {
     const todos = get_todos();
     todos[this.id].done = !todos[this.id].done   
