@@ -19,11 +19,12 @@ function addTask() {
     const status = false;
     if (todo !== '') {
       const todos = getTasks();
-      const id = todos.length+1;
+      const id = todos.length;
       console.log(id, "here")
         todos.push({todo, timeAdded, status, id});
         localStorage.setItem('todo', JSON.stringify(todos));
         showTasks();
+        
 
    
         const url=`https://majdqumseya.wixsite.com/mysite/_functions/addTodo/?text=${todo}&dateAdded=${timeAdded}&status=${status}&id=${id}`;
@@ -39,22 +40,25 @@ function deleteTask() {
     //Gets the tasks and id to be deleted
     const todos = getTasks();
     const id = this.getAttribute('id');
-
+    console.log('id to delete: ', id, todos)
+    const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(todos[id].id)}`;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange=(e)=>{
+        console.log(Http.responseText)
+    }
     //splices the todo item by id
     todos.splice(id, 1);
 
     //Sets the local storage object to the new todos
     localStorage.setItem('todo', JSON.stringify(todos));
+    
+    
 
     //Shows tasks (from local storage)
     showTasks();
 
-        const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(todos[id].id) - 1}`;
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange=(e)=>{
-        console.log(Http.responseText)
-        }
+        
 }
 
 async function editTask() {
