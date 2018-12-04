@@ -1,0 +1,159 @@
+
+html {
+    text-align: center;
+    font-family: "Avenir Next", Helevetica, sans-serif;
+    background-color: rgb(136, 102, 196);
+}
+body {
+    max-width: 100%;
+    margin: 0 auto;
+    
+    
+  }
+
+  #noTasks { 
+      font-size: 50px;
+      color : rgb(223, 151, 57);
+  }
+
+li {
+    text-align: left;
+    width: 100%;
+    font-size: 30px;
+    list-style: none;   
+    display: inline-block;
+    color:rgb(136, 102, 196);
+  
+   
+      
+}
+#done { 
+    display: inline-block;
+    font-size: 20px;
+}
+
+.card {
+    box-shadow: 2px 4px 2px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease-in-out;
+    width:50%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+.card-new {
+    animation: fadein 250ms linear;
+}
+
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
+    cursor: pointer;
+}
+
+ul { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.input-task, .dropdown { 
+        margin-top: 50px;
+        height: 30px;
+        width: 500px;
+        display: block;
+        margin: 0;
+        border: none;
+        border-radius: 0.4rem;
+        transition: box-shadow var(--transitionDuration);
+        font-family: 'Courier New', Courier, monospace;
+        
+}
+.input-task::placeholder {
+    text-align: center;
+    letter-spacing: 6px;
+}
+select {
+    text-align-last:center;
+}
+
+.checkbox {
+    margin-left : 50px;
+}
+
+header { 
+    height : 100px;
+    margin-top: -30px;
+    background-color: rgb(104, 39, 216);
+    box-shadow: white;
+}
+
+h1 { 
+    padding-top:30px;
+    color: #FF9100;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 30px;
+
+}
+
+.dropdown { 
+    margin-top: 200px;
+}
+
+#Tasks { 
+    color: white;
+}
+
+button.remove {
+    margin-left: 50px;
+    background: -webkit-linear-gradient(top, #DD4B39, #D14836); 
+    background: -moz-linear-gradient(top, #DD4B39, #D14836); 
+    background: -ms-linear-gradient(top, #DD4B39, #D14836); 
+    border: 1px solid #DD4B39;
+    color: white;
+    text-shadow: 0 1px 0 #C04131;
+}
+
+button.remove:hover {
+     background: -webkit-linear-gradient(top, #DD4B39, #C53727);
+     background: -moz-linear-gradient(top, #DD4B39, #C53727);
+     background: -ms-linear-gradient(top, #DD4B39, #C53727);
+     border: 1px solid #AF301F;
+}
+
+button.remove:active {
+     box-shadow: inset 0 1px 1px rgba(0,0,0,0.2);
+    background: -webkit-linear-gradient(top, #D74736, #AD2719);
+    background: -moz-linear-gradient(top, #D74736, #AD2719);
+    background: -ms-linear-gradient(top, #D74736, #AD2719);
+}
+
+.right {
+    float: right;
+    padding : 10px;
+}
+
+
+.left {
+    float: left;
+    padding : 15px 10px 10px 15px;
+    color: black;
+}
+
+.checked { 
+    text-decoration: line-through;
+    text-decoration-style: dashed;
+    
+    
+}
