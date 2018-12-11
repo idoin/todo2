@@ -1,5 +1,5 @@
 // show function is to be called whenever a change is made to the lis(add revpve sort check)
-function show() {
+function show() { 
     const todos = get_todos();
 
     let html = '<ul>';
@@ -8,10 +8,10 @@ function show() {
     })
     html += '</ul>';
 
-    document.getElementById('todos').innerHTML = html;
+    document.getElementById('todos').innerHTML = html; //querySelector or querySelectorAll 
     
     const buttons = document.getElementsByClassName('remove');
-    let checks = document.getElementsByClassName('check');
+    let checks = document.getElementsByClassName('check'); //change to const and also rename
     
     todos.forEach((todo,i)=>{
         checks[i].checked = todo.done ;
@@ -22,13 +22,13 @@ function show() {
 
 //add function to add a new task from the text input to the items list 
 function add() {
-     this.parentElement.children.item(1)!==null ? this.parentElement.removeChild(this.parentElement.childNodes[3]): null
+     this.parentElement.children.item(1)!==null ? this.parentElement.removeChild(this.parentElement.childNodes[3]): null //refactor
      if(event.key === 'Enter') {
         const task = this.value;
         
         if (task === '') { 
             if (this.parentElement.children.item(1)===null) {
-            const errorMsg = document.createElement("p");
+            const errorMsg = document.createElement("p"); 
             errorMsg.setAttribute("class","errorMsg");
             const errorTxt = document.createTextNode("You need to write a task first!");
             errorMsg.appendChild(errorTxt);
@@ -36,7 +36,7 @@ function add() {
             } 
          }
         else {
-            const date = new Date();      
+            const date = new Date(); //use date now to and store the ms format of the date      
             const todos = get_todos();
             todos.push({'task':task , 'date':date ,'done':false});    
             localStorage.setItem('todo', JSON.stringify(todos));    
@@ -67,9 +67,9 @@ function remove() {
 
 function check() {
     const todos = get_todos();
-    todos[this.id].done = !todos[this.id].done   
+    todos[this.id].done = !todos[this.id].done   //missing semicolon 
     localStorage.setItem('todo', JSON.stringify(todos));
-    show();
+    show(); //no need to render the whole thing
 }
 
 //sort function based of date done tasks and alphabetical order
@@ -83,7 +83,7 @@ function sort(){
     })
     
 
-    localStorage.setItem('todo', JSON.stringify(todos));
+    localStorage.setItem('todo', JSON.stringify(todos)); //save the type of sorting
     this.value = "";
     show();
 
