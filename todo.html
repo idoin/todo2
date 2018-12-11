@@ -1,19 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Twigs Todo</title>
-</head>
-<body>
-    
+<html>
+  <head>
+    <title>Todo App</title>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <p>
+        <label for="new-task">Add Item</label><input id="new-task" type="text"><button>Add</button>
+        <select id="sort-select">
+            <option selected="true" disabled="disabled">Sort</option>  
+            <option value="Alphabet">Alphabet</option>
+            <option value="Time">Time</option>
+            <option value="Status">Status</option>
+        </select>
+      </p>
+      
+      
+      <h3>Todo</h3>
+      <ul id="incomplete-tasks"></ul>
+    </div>
 
-    <div id="todo"></div>
-    <input type="text" name="task-input" id="task-input"><button id="add-button">Add</button>
-    <button id="sort-by-alphabet">Sort Alphabetically</button>
-    <button id="sort-by-time">Sort By Time</button>
-    <button id="sort-by-status">Sort By Status</button>
-    <script src="todo.js"></script>
-</body>
+    <script type="text/javascript" src="app.js"></script>
+
+  </body>
 </html>

@@ -1,228 +1,168 @@
-const Http = new XMLHttpRequest();
+let taskInput = document.querySelector("#new-task");
+let addButton = document.getElementsByTagName("button")[0];
+let incompleteTasksHolder = document.querySelector("#incomplete-tasks");
+let selector = document.querySelector('#sort-select');
 
-function getTasks() {
-    //Returns todos stored in local storage, if empty returns empty array
-    let todos = new Array;
-    const todoStorage = localStorage.getItem('todo');
-    todoStorage !== null
-        ? todos = JSON.parse(todoStorage)
-        : null;
 
-    return todos;
+const fetchTasks = () => {
+	let tasksFromLocal;
+	const todoStorage = localStorage.getItem('Tasks');
 
+	todoStorage !== null ? tasksFromLocal = JSON.parse(todoStorage) : tasksFromLocal = [];
+
+	return tasksFromLocal;
 }
 
-function addTask() {
-    //Adds task to todo list in local storage and then shows todos
-    const todo = document.getElementById('task-input').value;
-    const timeAdded = new Date().toLocaleTimeString();
-    const status = false;
-    if (todo !== '') {
-      const todos = getTasks();
-      const id = todos.length+1;
-      console.log(id, "here")
-        todos.push({todo, timeAdded, status, id});
-        localStorage.setItem('todo', JSON.stringify(todos));
-        showTasks();
+const sortSelected = () => {
+	switch (selector.value) {
+		case 'Time':
+			tasks.sort(compareTimes);
+			break;
+		case 'Status':
+			tasks.sort(compareStatus);
+			break;
+		case 'Alphabet':
+			tasks.sort(compareLetters);
+			break;
+		default:
+			break;
+	}
 
-   
-        const url=`https://majdqumseya.wixsite.com/mysite/_functions/addTodo/?text=${todo}&dateAdded=${timeAdded}&status=${status}&id=${id}`;
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange=(e)=>{
-        console.log(Http.responseText)
-        }
-    }
+	localStorage.setItem('Tasks', JSON.stringify(tasks))
+	let oldListItems = document.querySelectorAll('li');
+	tasks.forEach((element, index) => {
+		let listItem = createNewTaskElement(element.task, element.done);
+		incompleteTasksHolder.replaceChild(listItem, oldListItems[index]);
+		bindTaskEvents(listItem, taskCompleted);
+	});
 }
 
-function deleteTask() {
-    //Gets the tasks and id to be deleted
-    const todos = getTasks();
-    const id = this.getAttribute('id');
 
-    //splices the todo item by id
-    todos.splice(id, 1);
-
-    //Sets the local storage object to the new todos
-    localStorage.setItem('todo', JSON.stringify(todos));
-
-    //Shows tasks (from local storage)
-    showTasks();
-
-        const url=`https://majdqumseya.wixsite.com/mysite/_functions/deleteTodo/?id=${parseInt(todos[id].id) - 1}`;
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange=(e)=>{
-        console.log(Http.responseText)
-        }
+const compareLetters = (a,b) => {
+	if (a.task < b.task)
+		return -1;
+	if (a.task > b.task)
+		return 1;
+	return 0;
 }
 
-async function editTask() {
-    //Creats edit input for selected list item and adds event hooks to save and delete button
-    const oldValue = this.parentElement.innerText.replace('x*Added: ', '').trim().slice(0, -11);
- 
-    const index = this.id;
-    const listElement = document.createElement("li");
-    const inputElement = document.createElement("input");
-    const deleteButton = document.createElement("button");
-    const editButton = document.createElement("button");
-
-    inputElement.value = oldValue;
-    deleteButton.className = "delete";
-    deleteButton.id = index
-    deleteButton.innerText = "x";
-    deleteButton.addEventListener('click', deleteTask);
-
-    editButton.className="save";
-    editButton.id = index;
-    editButton.innerHTML = "*"
-   
-    editButton.addEventListener('click', (event) => {
-        const newValue = inputElement.value;
-        saveTask(index, newValue);
-    });
- 
-    
-    listElement.appendChild(inputElement);
-    listElement.appendChild(deleteButton);
-    listElement.appendChild(editButton);
-    
-    const todoList = document.getElementById('todo-list');
-   
-    todoList.replaceChild(listElement, todoList.childNodes[index]);    
+const compareTimes = (a,b) => {
+	if (a.date < b.date)
+		return -1;
+	if (a.date > b.date)
+		return 1;
+	return 0;
 }
 
-function saveTask(index, newTodo) {
-   //Get the tasks
-   const todos = getTasks();
-   const newTime = new Date().toLocaleTimeString();
-   //Edits the selected index with new todo item
-   todos[index].todo = newTodo;
-   todos[index].timeAdded = newTime; 
-
-   //Updates the local storage todo object with new one
-   localStorage.setItem('todo', JSON.stringify(todos));
-
-   //Show tasks (from local storage)
-   showTasks();
-
-    const url=`https://majdqumseya.wixsite.com/mysite/_functions/editTodo/?id=${parseInt(todos[index].id)}&text=${newTodo}&time=${newTime}&status=${todos[index].status}`;
-    Http.open("GET", url);
-    Http.send();
-    Http.onreadystatechange=(e)=>{
-        console.log(Http.responseText)
-    }
+const compareStatus = (a,b) => {
+	if (a.done > b.done)
+		return -1;
+	if (a.done < b.done)
+		return 1;
+	return 0;
 }
 
-function changeStatus() {
-    const todos = getTasks();
-    const id = this.getAttribute('id');
+const renderTasks = () => {
+	tasks.forEach(element => {
+		let listItem = createNewTaskElement(element.task, element.done);
 
-    //splices the todo item by id
-    todos[id].status = !todos[id].status
+		incompleteTasksHolder.appendChild(listItem);
 
-    //Sets the local storage object to the new todos
-    localStorage.setItem('todo', JSON.stringify(todos));
-
-    const url=`https://majdqumseya.wixsite.com/mysite/_functions/changeStatus/?id=${parseInt(todos[id].id)}&status=${todos[id].status}`;
-    Http.open("GET", url);
-    Http.send();
-    Http.onreadystatechange=(e)=>{
-        console.log(Http.responseText)
-    }
+		bindTaskEvents(listItem, taskCompleted);
+	});
 }
 
-// Sort and their respective compare functions (.sort())
+const createNewTaskElement = (taskString, status) => {
 
-// Alphabet
-function sortByAlphabet() {
-    const todos = getTasks();
-    todos.sort(compareLetters);
-    localStorage.setItem('todo', JSON.stringify(todos));
-    showTasks();
-}
+	let listItem = document.createElement("li");
+	let checkBox = document.createElement("input");
+	let label = document.createElement("label")
+	let deleteButton = document.createElement("button")
 
-function compareLetters(a,b) {
-    if (a.todo < b.todo)
-      return -1;
-    if (a.todo > b.todo)
-      return 1;
-    return 0;
-} 
-// !Alphabet
+	status ? checkBox.checked = true : null;
 
-// Time
-function sortByTime() {
-    const todos = getTasks();
-    todos.sort(compareTimes);
-    localStorage.setItem('todo', JSON.stringify(todos));
-    showTasks();
-}
+	checkBox.type = "checkbox";
 
-function compareTimes(a,b) {
-    if (a.timeAdded < b.timeAdded)
-      return -1;
-    if (a.timeAdded > b.timeAdded)
-      return 1;
-    return 0;
-}
-// !Time
+	deleteButton.innerText = "Delete";
+	deleteButton.className = "delete";
 
-// Status
-function sortByStatus() {
-    const todos = getTasks();
-    todos.sort(compareStatus);
-    localStorage.setItem('todo', JSON.stringify(todos));
-    showTasks();
-}
+	label.innerText = taskString;
 
-function compareStatus(a,b) {
-    if (a.status > b.status)
-    return -1;
-  if (a.status < b.status)
-    return 1;
-  return 0;
-}
+	listItem.appendChild(checkBox);
+	listItem.appendChild(label);
+	listItem.appendChild(deleteButton);
 
-// !Status
+	return listItem;
+};
 
-function showTasks() {
-    //Get the tasks
-    const todos = getTasks();
+const addTask = () => {
+	let listItem = createNewTaskElement(taskInput.value);
+	tasks.push({
+		'task': taskInput.value,
+		'date': Date.now(),
+		'done': false
+	});
 
-    //Build task list
-    let taskList = '<ul id="todo-list">';
-   
-    todos.forEach((todo, index) => {
-        todo.status === false? taskList += `<li> <input type="checkbox" id="${index}" class="check" name="todo${index}" value="todo${index}">${todo.todo}<button class="delete" id="${index}">x</button><button class="edit" id="${index}">*</button>Added: ${todo.timeAdded}</li>`: taskList += `<li> <input type="checkbox" id="${index}" class="check" name="todo${index}" value="todo${index}" checked>${todo.todo}<button class="delete" id="${index}">x</button><button class="edit" id="${index}">*</button>Added: ${todo.timeAdded}</li>`; 
-        
-    });
-    taskList += '</ul>';
+	localStorage.setItem("Tasks", JSON.stringify(tasks));
 
-    //Set the div html to newly built task list
-    document.getElementById('todo').innerHTML = taskList;
+	incompleteTasksHolder.appendChild(listItem);
+	bindTaskEvents(listItem, taskCompleted);
 
-    //Adding event listeners to delete/edit buttons
-    deleteButtons = document.getElementsByClassName('delete');
-    editButtons = document.getElementsByClassName('edit');
-    checkBoxes = document.getElementsByClassName("check");
-    todos.forEach((todo, index) => {
-        deleteButtons[index].addEventListener('click', deleteTask);
-        editButtons[index].addEventListener('click', editTask);
-        checkBoxes[index].addEventListener('click', changeStatus)
-    });
+	taskInput.value = "";
+};
 
-}
+const deleteTask = function() {
+	let listItem = this.parentNode;
+	let taskToDelete = listItem.children[1].innerText;
 
-//Event Listeners
-document.getElementById('add-button').addEventListener('click', addTask);
-document.getElementById('task-input').addEventListener("keyup", (event) =>  {
-    event.preventDefault();
-    event.keyCode === 13? document.getElementById("add-button").click(): null;
-});
-document.getElementById('sort-by-alphabet').addEventListener('click', sortByAlphabet);
-document.getElementById('sort-by-time').addEventListener('click', sortByTime);
-document.getElementById('sort-by-status').addEventListener('click', sortByStatus);
+	let found = tasks.find((element) => {
+		return element.task === taskToDelete
+	})
 
-//Initial function to get tasks
-showTasks();
+	tasks.splice(tasks.indexOf(found), 1);
+	localStorage.setItem('Tasks', JSON.stringify(tasks));
+
+	let ul = listItem.parentNode
+
+	ul.removeChild(listItem);
+};
+
+
+const taskCompleted = function() {
+	let listItem = this.parentNode;
+	let taskToDelete = listItem.children[1].innerText;
+
+	let found = tasks.find((element) => {
+		return element.task === taskToDelete
+	})
+
+	tasks[tasks.indexOf(found)].done = !tasks[tasks.indexOf(found)].done
+
+	localStorage.setItem('Tasks', JSON.stringify(tasks));
+};
+
+const taskIncomplete = () => {
+	let listItem = this.parentNode;
+	incompleteTasksHolder.appendChild(listItem);
+	bindTaskEvents(listItem, taskCompleted)
+};
+
+const bindTaskEvents = (taskListItem, checkBoxEventHandler)  => {
+	let checkBox = taskListItem.querySelector("input[type=checkbox]");
+	let deleteButton = taskListItem.querySelector("button.delete");
+
+	deleteButton.onclick = deleteTask
+
+	checkBox.onchange = checkBoxEventHandler;
+};
+
+addButton.onclick = addTask;
+
+selector.onchange = sortSelected;
+
+for (let i = 0; i < incompleteTasksHolder.children.length; i++) {
+	bindTaskEvents(incompleteTasksHolder.children[i], taskCompleted);
+};
+
+let tasks = fetchTasks();
+renderTasks();
