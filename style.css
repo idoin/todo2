@@ -41,15 +41,6 @@ li {
     border: 1px solid #ccc;
     background: #fff;
 }
-.card-new {
-    animation: fadein 250ms linear;
-}
-
-
-@keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
 
 
 .card:hover {
@@ -90,6 +81,7 @@ select {
 
 .checkbox {
     margin-left : 50px;
+    cursor: pointer;
 }
 
 header { 
@@ -107,9 +99,16 @@ h1 {
 
 }
 
-.dropdown { 
+.dropdown {
     margin-top: 200px;
+    border-radius: 50px;
 }
+
+.dropdown option{
+    text-indent: 40%;
+    border-radius: 50px;
+}
+
 
 #Tasks { 
     color: white;
@@ -140,20 +139,44 @@ button.remove:active {
 }
 
 .right {
-    float: right;
+    display: inline-block;
     padding : 10px;
+
 }
 
 
 .left {
-    float: left;
+    display:inline-block;
     padding : 15px 10px 10px 15px;
     color: black;
+    width:60%;
+    word-break: break-all;
 }
 
 .checked { 
     text-decoration: line-through;
     text-decoration-style: dashed;
+    opacity: .5;
     
     
+}
+
+.container input {
+    margin: 0 .25rem;
+    min-width: 125px;
+    border: 1px solid #eee;
+    border-left: 3px solid;
+    border-radius: 50px;
+    transition: border-color .8s ease-out;
+}
+
+.container input:required:valid {
+    border-left-color: palegreen;
+    border-right-color: palegreen;
+    border-right-width: 3px;
+}
+.container input:invalid {
+    border-left-color: salmon;
+    border-right-color: salmon;
+    border-right-width: 3px;
 }

@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
 
-    <link rel="stylesheet" href="style.css" />
- 
-    </head>
- 
-    <body>
-         <div class="container">  
-<select  id = "dropdown"  name="dropdown" size=1 class= "dropdown" onchange="filter()" >
+<head>
 
-        <option value="" disabled selected>Sort by: </option>
+    <link rel="stylesheet" href="style.css"/>
+
+</head>
+
+<body>
+
+<div class="container">
+    <select id="dropdown" name="dropdown" size=1 class="dropdown" onchange="sort()">
+
+        <option value=""  hidden="">Sort by:</option>
         <option value="2">Time ( oldest to newest )</option>
-        <option value="1">Alphabiticall</option>
-        <option value="3"> Status </option>
-       
+        <option value="1">Alphabetical</option>
+        <option value="3"> Status</option>
+
     </select>​
 </div>
-    <h3 id="noTasks"> </h3>
-<div id="Tasks">
+
+<h3 id="noTasks"> No Task for today! Have fun :) </h3>
+
+<div id="tasks">
+    <ul id="ul"></ul>
 </div>
+
 <div class="container">
-<input class="input-task" id="addTask" placeholder="Got Something to do ? " > 
-</div>    
+    <input required class="input-task" id="addTask" placeholder="Got Something to do ? ">
+</div>
+
 </body>
 
-    <script src="todoApp.js"></script>
+<script src="todoApp.js"></script>
 
 </html>
