@@ -1,96 +1,129 @@
-// show function is to be called whenever a change is made to the lis(add revpve sort check)
-function show() {
-    const todos = get_todos();
+const todos = getTodos();
+const sortSelected = document.querySelector('#sort');
+const todosList = document.querySelector("#todosList");
 
-    let html = '<ul>';
-    todos.forEach((todo,i)=>{
-      html += '<li><button class=" btn btn-danger remove" id="'+i+'">x</button><input type="checkbox" class ="check" id="'+i+'" /><label>'+todo.task+'</label></li>';
-    })
-    html += '</ul>';
-
-    document.getElementById('todos').innerHTML = html;
-    
-    const buttons = document.getElementsByClassName('remove');
-    let checks = document.getElementsByClassName('check');
-    
-    todos.forEach((todo,i)=>{
-        checks[i].checked = todo.done ;
-        checks[i].addEventListener('click', check);
-        buttons[i].addEventListener('click', remove);
-    }); 
+function getTodos() {
+    let savedTodos = localStorage.getItem('todo');
+    savedTodos !== null ? savedTodos = JSON.parse(savedTodos): savedTodos =[]    
+    return savedTodos;
 }
 
-//add function to add a new task from the text input to the items list 
-function add() {
-     this.parentElement.children.item(1)!==null ? this.parentElement.removeChild(this.parentElement.childNodes[3]): null
-     if(event.key === 'Enter') {
+function showTodoList() {
+
+    localStorage.getItem('sortSelected') ? sortSelected.value = localStorage.getItem('sortSelected') : sortSelected.value = ""
+    
+    while(todosList.firstChild){ 
+       todosList.removeChild(todosList.firstChild);
+    }
+
+    todos.forEach( (todo, i) =>{
+
+        const todoItem =  buildTask(todo);
+        todosList.appendChild(todoItem);
+        
+        const checkBox = todoItem.querySelector("input[type=checkbox]");
+        const deleteButton = todoItem.querySelector("button");
+
+        deleteButton.addEventListener('click', removeTask);
+        checkBox.addEventListener('click', check);
+
+    });
+}
+
+function addNewTask() {
+
+    const errMsg = document.querySelector('p');
+    errMsg.style.display = 'none';
+    
+    if(event.key === 'Enter') {
         const task = this.value;
         
         if (task === '') { 
-            if (this.parentElement.children.item(1)===null) {
-            const errorMsg = document.createElement("p");
-            errorMsg.setAttribute("class","errorMsg");
-            const errorTxt = document.createTextNode("You need to write a task first!");
-            errorMsg.appendChild(errorTxt);
-            document.getElementById("inputBox").appendChild(errorMsg);
-            } 
-         }
-        else {
-            const date = new Date();      
-            const todos = get_todos();
-            todos.push({'task':task , 'date':date ,'done':false});    
+            errMsg.style.display = 'block';
+        }else {
+
+            errMsg.style.display = 'none';
+            const date = new Date(Date.now());
+            let newTodo= {'task':task , 'date':date ,'done':false};     
+            
+            todos.push(newTodo);
             localStorage.setItem('todo', JSON.stringify(todos));    
+            
             this.value="";
-            show();
+            
+            const todoItem = buildTask(newTodo);
+            todosList.appendChild(todoItem);
+        
+            const checkBox = todoItem.querySelector("input[type=checkbox]");
+            const deleteButton = todoItem.querySelector("button");
+
+            deleteButton.addEventListener('click', removeTask);
+            checkBox.addEventListener('click', check);
+         
+            if(sortSelected){sort()}
         }
     }
 }
 
-//get the todos stored in the session 
-function get_todos() {
-    let todos = [];
-    let todos_str = localStorage.getItem('todo');
-    todos_str !== null ? todos = JSON.parse(todos_str): null    
-    return todos;
+function buildTask (todo){
+
+    const listItem = document.createElement("li");
+    const checkBox = document.createElement("input");
+    const taskLabel = document.createElement("label");
+    const deleteButton = document.createElement("button")
+
+
+    checkBox.type = "checkbox";
+    checkBox.checked = todo.done;
+
+    deleteButton.className = "btn btn-danger remove";
+    deleteButton.innerText = "X";
+
+    taskLabel.innerText = todo.task;
+
+    listItem.appendChild(checkBox);
+    listItem.appendChild(taskLabel);
+    listItem.appendChild(deleteButton);
+
+    return listItem;
 }
 
-//remove function to remove an item from the list on button click 
-function remove() {
-    const id = this.getAttribute('id');
-    const todos = get_todos();
-    todos.splice(id, 1);   
+function removeTask(e) {
+    const taskToRemove = e.target.parentNode.parentNode;
+    taskToRemove.removeChild(e.target.parentNode);
+    const found= todos.findIndex(x => x.task== e.target.parentNode.children[1].innerText);
+
+    todos.splice(found, 1);   
     localStorage.setItem('todo', JSON.stringify(todos));
-    show();
 }
 
-//check function to update the status of the check button
 
-function check() {
-    const todos = get_todos();
-    todos[this.id].done = !todos[this.id].done   
+function check(e) {
+    const taskToCheck= e.target.parentNode;
+    const found= todos.findIndex(x => x.task== e.target.parentNode.children[1].innerText);
+
+    todos[found].done = e.target.parentNode.children[0].checked;
     localStorage.setItem('todo', JSON.stringify(todos));
-    show();
 }
 
-//sort function based of date done tasks and alphabetical order
 function sort(){
-    const sorting = this.value;
-    const todos = get_todos();
+    
+    let sortingValue;
+    this.value ? sortingValue = this.value : sortingValue = sortSelected.value
+
     todos.sort((a, b)=>{
-        if(a[sorting] < b[sorting]) { return -1; }
-        if(a[sorting] > b[sorting]) { return 1; }
+        if(a[sortingValue] < b[sortingValue]) { return -1; }
+        if(a[sortingValue] > b[sortingValue]) { return 1; }
         return 0;
     })
     
-
     localStorage.setItem('todo', JSON.stringify(todos));
-    this.value = "";
-    show();
-
+    localStorage.setItem('sortSelected', sortingValue);
+  
+    showTodoList();
 }
 
-//add event listners on usser input and sort elements
-document.getElementById("task").addEventListener("keydown", add);
-document.getElementById("sort").addEventListener("click", sort)
- 
-show();
+document.getElementById("task").addEventListener("keydown", addNewTask);
+document.getElementById("sort").addEventListener("change", sort);
+
+showTodoList();

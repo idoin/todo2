@@ -1,7 +1,7 @@
 *{
     margin: 10px;
     padding: 0px;
-    outline: none;
+    outline: 5PX;
     border: none;
     box-sizing: border-box;
 }
@@ -70,7 +70,7 @@ ul{
 input[type="checkbox"]{
     position: relative;
     top: 30px;
-    right: 50px;
+    right: 90px;
 	float: right;
     cursor: pointer;
 }
@@ -106,7 +106,12 @@ select{
     background: rgba(0,0,50,.1);
 }
 
-.errorMsg{
+.errMsg{
 	color: Red;
+    display: none;
     
+}
+
+#todosList {
+    padding-top: 50px;
 }

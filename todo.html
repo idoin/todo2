@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 
 <head>
@@ -10,28 +10,27 @@
 
 <body>
 
-	<div id="myDIV" class="header">
+	<div class="header">
 
 		<h2>My To Do List</h2>
 
-		<select id="sort" >
+		<select id="sort">
 
-			<option value="" selected>Sort by</option>
+			<option value=""selected disabled="">Sort by</option>
 			<option value="date">Date Added</option>
 			<option value="done">Done Tasks</option>
 			<option value="task">Alphabetical </option>
 
 		</select>
 
-		<div id="todos"></div>
+		<div id="todosList"></div>
 
 		<div id="inputBox">
-
 			<input id="task" placeholder=" Add a new task">
-
+			<p class='errMsg'> You need to write a task first! </p>
 		</div>
-
-	</div>
+</div>
+	
 
 	<script src="todo.js"></script>
 
